@@ -132,6 +132,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-decoration: none;
+    color: inherit;
   }
 
   .project-card:hover {
