@@ -15,13 +15,18 @@
   }
   
   /* Global Styles */
-  body {
-    font-family: 'Adobe Garamond Pro', serif;
-    line-height: 1.6;
-    text-align: center;
-    background-color: #f4f4f4;
-    color: #333;
-  }
+body {
+  font-family: 'Adobe Garamond Pro', serif;
+  line-height: 1.6;
+  text-align: center;
+  background-image: url('assets/background2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #333;
+  min-height: 100vh;
+}
   
   /* Container for the content on all pages */
   .container {
