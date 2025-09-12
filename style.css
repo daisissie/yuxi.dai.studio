@@ -578,10 +578,48 @@ body {
   border-left: 3px solid transparent;
 }
 
-.sidebar-content .sub-nav a {
+/* Main category links - left justified */
+.sidebar-content .main-category {
+  font-weight: bold;
+  color: #333;
+  border-left: 3px solid #333;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Expandable indicator */
+.sidebar-content .main-category::after {
+  content: '+';
+  position: absolute;
+  right: 1rem;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-content .main-category.expanded::after {
+  content: '−';
+  transform: rotate(0deg);
+}
+
+/* Project group container */
+.sidebar-content .project-group {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.sidebar-content .project-group.expanded {
+  max-height: 1000px; /* Adjust based on content */
+}
+
+/* Individual project links - right justified */
+.sidebar-content .project-link {
   padding-left: 2.5rem;
   font-size: 0.85rem;
   color: #888;
+  text-align: right;
+  padding-right: 1rem;
+  display: block;
 }
 
 .sidebar-content a:hover {
