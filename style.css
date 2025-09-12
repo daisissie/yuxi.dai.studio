@@ -1,22 +1,8 @@
-/* Import Quokka font from Google Fonts */
+/* Import fonts from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Quokka:wght@300;400;500;600;700&display=swap');
-
-/* Define Loos using @font-face */
-@font-face {
-    font-family: 'Loos';
-    src: url('fonts/Loos-Regular.woff2') format('woff2'),
-         url('fonts/Loos-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-@font-face {
-    font-family: 'Loos';
-    src: url('fonts/Loos-Bold.woff2') format('woff2'),
-         url('fonts/Loos-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Skia:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cambria:wght@400;700&display=swap');
   
   /* Basic Reset */
   * {
@@ -27,7 +13,6 @@
   
   /* Global Styles */
 body {
-  font-family: 'Quokka', 'Loos', sans-serif;
   line-height: 1.6;
   text-align: center;
   background-image: url('assets/Untitled-1.jpg');
@@ -35,7 +20,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color: #333;
+  color: #333333;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -53,15 +38,29 @@ body {
   
   /* Landing Page Specific Styles */
   h1 {
+    font-family: 'Skia', sans-serif;
+    font-weight: 700;
     font-size: 5rem;
     margin-bottom: 40px;
   }
 
+  /* Second type of title - h2 elements */
+  h2 {
+    font-family: 'Tahoma', sans-serif;
+    font-weight: 700;
+  }
+
+  /* Description text - p elements */
+  p {
+    font-family: 'Cambria', serif;
+  }
+
   /* Work Page Title Styles */
   .work-title {
+    font-family: 'Skia', sans-serif;
+    font-weight: 700;
     font-size: 3rem;
     margin-bottom: 30px;
-    font-weight: bold;
     color: #333;
     text-align: center;
   }
@@ -76,10 +75,10 @@ body {
 
   /* Section Headers for Work Pages */
   .section-header {
-    font-family: 'Quokka', sans-serif;
+    font-family: 'Tahoma', sans-serif;
     font-size: 2.5rem;
     margin-bottom: 30px;
-    font-weight: 600;
+    font-weight: 700;
     color: #333;
     text-align: center;
   }
@@ -112,11 +111,11 @@ body {
   .buttons button {
     padding: 20px 40px;
     font-size: 1.5rem;
-    font-family: 'Quokka', 'Loos Extended Medium', 'Loos', sans-serif;
+    font-family: 'Tahoma', bold;
     font-weight: 500;
     border: none;
-    background-color: rgba(51, 51, 51, 0.8);
-    color: #fff;
+    background-color: rgba(111, 109, 109, 0.45);
+    color: #ffffff;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
     border-radius: 8px;
@@ -172,6 +171,102 @@ body {
 
   .rounded-container h2 a:hover {
     color: #ffa3c6;
+  }
+
+  /* Intro container styles */
+  .intro-container {
+    background: rgba(255, 255, 255, 0.517);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    text-align: left;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .intro-container p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+  }
+
+  .intro-container p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Project sections styling */
+  .project-sections {
+    margin-top: 60px;
+  }
+
+  .project-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    scroll-margin-top: 100px; /* For smooth scrolling with fixed header */
+  }
+
+  .project-section h2 {
+    font-family: 'Skia', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+  }
+
+  .project-content {
+    line-height: 1.6;
+  }
+
+  .project-content p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #444;
+  }
+
+  .project-details {
+    background: rgba(248, 249, 250, 0.8);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    border-left: 4px solid #333;
+  }
+
+  .project-details h3 {
+    font-family: 'Tahoma', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  .project-details ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .project-details li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    color: #555;
+  }
+
+  .project-details li:last-child {
+    border-bottom: none;
+  }
+
+  .project-details li:before {
+    content: "•";
+    color: #333;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
   }
 
   /* Resume container styles */
