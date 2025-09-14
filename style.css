@@ -437,7 +437,8 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
-    padding: 20px;
+    /* Match inner content width with .project-section padding (40px) */
+    padding: 20px 40px;
   }
 
   .project-card {
