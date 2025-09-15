@@ -211,12 +211,13 @@ body {
   }
 
   .project-section {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(243, 239, 239, 0.9);
     border-radius: 12px;
     padding: 40px;
     margin-bottom: 40px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     scroll-margin-top: 100px; /* For smooth scrolling with fixed header */
+    text-align: left;
   }
 
   .project-section h2 {
@@ -231,6 +232,7 @@ body {
 
   .project-content {
     line-height: 1.6;
+    text-align: left;
   }
 
   .project-content p {
@@ -240,19 +242,77 @@ body {
   }
 
   .project-details {
-    background: rgba(248, 249, 250, 0.8);
+    background: #ffffff;
     border-radius: 8px;
     padding: 20px;
     margin-top: 20px;
-    border-left: 4px solid #333;
   }
+
+  /* Inline image gallery before project info */
+  .project-gallery {
+    position: relative;
+    margin: 16px 0 10px;
+  }
+
+  .gallery-track {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 6px; /* space for hidden scrollbar */
+    direction: rtl; /* content flows right to left */
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .gallery-track::-webkit-scrollbar { /* Chrome/Safari */
+    display: none;
+  }
+
+  .gallery-track img,
+  .gallery-image {
+    flex: 0 0 auto;
+    height: 220px;
+    width: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    scroll-snap-align: start;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .project-gallery .gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: rgba(255,255,255,0.85);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+    z-index: 2;
+  }
+
+  .project-gallery .gallery-arrow:hover {
+    background: rgba(255,255,255,1);
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  .project-gallery .gallery-arrow.left { left: 8px; }
+  .project-gallery .gallery-arrow.right { right: 8px; }
 
   .project-details h3 {
     font-family: 'Tahoma', sans-serif;
     font-weight: 700;
     font-size: 1.3rem;
     margin-bottom: 15px;
-    color: #333;
+    color: #5a5a5a;
   }
 
   .project-details ul {
@@ -261,9 +321,10 @@ body {
   }
 
   .project-details li {
-    padding: 8px 0;
+    padding: 8px 0 8px 1.25rem; /* add left padding before each item */
     border-bottom: 1px solid #eee;
     color: #555;
+    position: relative;
   }
 
   .project-details li:last-child {
@@ -274,9 +335,8 @@ body {
     content: "•";
     color: #333;
     font-weight: bold;
-    display: inline-block;
-    width: 1em;
-    margin-left: -1em;
+    position: absolute;
+    left: 0;
   }
 
   /* Resume container styles */

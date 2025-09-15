@@ -51,4 +51,28 @@ document.addEventListener("DOMContentLoaded", function() {
   } else if (currentPage === 'life.html') {
     expandForPage('life.html');
   }
+
+  // Wire up inline project galleries (horizontal scroll with arrows)
+  const galleries = document.querySelectorAll('.project-gallery');
+  galleries.forEach(gal => {
+    const track = gal.querySelector('.gallery-track');
+    const prevBtn = gal.querySelector('.gallery-arrow.left');
+    const nextBtn = gal.querySelector('.gallery-arrow.right');
+    if (!track || !prevBtn || !nextBtn) return;
+
+    const getStep = () => Math.max(240, Math.floor(track.clientWidth * 0.8));
+    const isRTL = () => getComputedStyle(track).direction === 'rtl';
+
+    prevBtn.addEventListener('click', () => {
+      const step = getStep();
+      const dir = isRTL() ? step : -step; // in RTL, prev moves content rightward visually
+      track.scrollBy({ left: dir, behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const step = getStep();
+      const dir = isRTL() ? -step : step; // in RTL, next moves content leftward visually
+      track.scrollBy({ left: dir, behavior: 'smooth' });
+    });
+  });
 });
