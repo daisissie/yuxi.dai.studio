@@ -12,7 +12,7 @@
   }
   
   /* Global Styles */
-body {
+.home, body {
   line-height: 1.6;
   text-align: center;
   background-image: url('assets/Untitled-1.jpg');
@@ -26,6 +26,45 @@ body {
   align-items: center;
   justify-content: center;
   padding-top: 80px;
+}
+
+/* Home page overrides: no scroll, stage for floating thumbs */
+.home {
+  overflow: hidden;
+  padding-top: 0;
+  position: relative;
+}
+
+.home #home-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none; /* clicks pass through */
+}
+
+.home .container {
+  position: relative;
+  z-index: 1; /* content above floating thumbs */
+}
+
+/* Floating background thumbnails */
+.bg-thumb {
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.20);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.94) rotate(var(--rot, 0deg));
+  animation: bgEnter 900ms ease forwards;
+  mix-blend-mode: normal; /* allow overlays but keep colors readable */
+  pointer-events: none;
+}
+
+@keyframes bgEnter {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.94) rotate(var(--rot, 0deg)); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(var(--rot, 0deg)); }
 }
   
   /* Container for the content on all pages */
@@ -42,6 +81,16 @@ body {
     font-weight: 700;
     font-size: 5rem;
     margin-bottom: 40px;
+  }
+
+  /* Home page headline shadow for readability over thumbnails */
+  .home h1 {
+    text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Make only the name white on the home headline */
+  .home h1 .name-white {
+    color: #ffffff;
   }
 
   /* Second type of title - h2 elements */
@@ -74,6 +123,23 @@ body {
     color: #333;
     text-align: center;
   }
+
+  /* Prominent tagline under Work title */
+  .tagline-highlight {
+    display: inline-block;
+    margin: 0 auto 18px;
+    padding: 10px 16px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, rgba(255,246,173,0.85), rgba(255,210,224,0.85));
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    color: #222;
+    font-family: 'Tahoma', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-align: center;
+  }
+
+  .work-page-container .tagline-highlight { align-self: center; }
 
   /* Work Page Layout */
   .work-page-container {
@@ -191,7 +257,7 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     margin: 20px 0;
     text-align: left;
-    max-width: 1000px;
+    max-width: 890px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -551,6 +617,38 @@ body {
     transform: translateY(-5px);
   }
 
+  /* Pop-in animation for index thumbnails */
+  .project-card.pop-in {
+    opacity: 0;
+    transform: scale(0.96);
+    animation: popIn 520ms ease forwards;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Staggered appearance for index grid */
+  .index-grid .project-card:nth-child(1)  { animation-delay: 0.00s; }
+  .index-grid .project-card:nth-child(2)  { animation-delay: 0.05s; }
+  .index-grid .project-card:nth-child(3)  { animation-delay: 0.10s; }
+  .index-grid .project-card:nth-child(4)  { animation-delay: 0.15s; }
+  .index-grid .project-card:nth-child(5)  { animation-delay: 0.20s; }
+  .index-grid .project-card:nth-child(6)  { animation-delay: 0.25s; }
+  .index-grid .project-card:nth-child(7)  { animation-delay: 0.30s; }
+  .index-grid .project-card:nth-child(8)  { animation-delay: 0.35s; }
+  .index-grid .project-card:nth-child(9)  { animation-delay: 0.40s; }
+  .index-grid .project-card:nth-child(10) { animation-delay: 0.45s; }
+  .index-grid .project-card:nth-child(11) { animation-delay: 0.50s; }
+  .index-grid .project-card:nth-child(12) { animation-delay: 0.55s; }
+  .index-grid .project-card:nth-child(13) { animation-delay: 0.60s; }
+  .index-grid .project-card:nth-child(14) { animation-delay: 0.65s; }
+  .index-grid .project-card:nth-child(15) { animation-delay: 0.70s; }
+  .index-grid .project-card:nth-child(16) { animation-delay: 0.75s; }
+  .index-grid .project-card:nth-child(17) { animation-delay: 0.80s; }
+  .index-grid .project-card:nth-child(18) { animation-delay: 0.85s; }
+
   .project-card h2 {
     margin-bottom: 15px;
     text-align: center;
@@ -608,7 +706,7 @@ body {
   left: 20px;
   width: 250px;
   height: calc(100vh - 120px);
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.764);
   border-radius: 1rem;
   box-shadow: 0 4px 24px rgba(0,0,0,0.10);
   backdrop-filter: blur(10px);
@@ -751,4 +849,41 @@ footer a:hover {
 
 footer i {
   font-size: 2rem;
+}
+.about-page .resume-container {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 24px;
+  align-items: start;
+}
+
+.about-page .vertical-name-fixed {
+  position: sticky;
+  top: 120px; /* sticks as page scrolls */
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: 'Skia', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: 0.09em;
+  color: #222;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0.25);
+  height: max-content;
+  align-self: start;
+}
+
+/* Hide duplicated horizontal H1 on about page (since name is vertical) */
+.about-page .container > h1 {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .about-page .resume-container {
+    grid-template-columns: 1fr auto;
+    column-gap: 16px;
+  }
+  .about-page .vertical-name-fixed {
+    top: 96px;
+    font-size: 1.25rem;
+  }
 }
