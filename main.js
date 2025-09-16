@@ -76,6 +76,68 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
+  // Lightbox for project gallery images
+  const openLightbox = (src, alt = '') => {
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+
+    const frame = document.createElement('div');
+    frame.className = 'lightbox-frame';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'lightbox-close';
+    closeBtn.setAttribute('aria-label', 'Close image');
+    closeBtn.textContent = '×';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = alt;
+    img.className = 'lightbox-image';
+
+    frame.appendChild(closeBtn);
+    frame.appendChild(img);
+    overlay.appendChild(frame);
+    document.body.appendChild(overlay);
+
+    const tearDown = () => {
+      document.removeEventListener('keydown', onKeyDown);
+      overlay.classList.add('closing');
+      setTimeout(() => overlay.remove(), 220);
+    };
+
+    const onKeyDown = (evt) => {
+      if (evt.key === 'Escape') {
+        tearDown();
+      }
+    };
+
+    closeBtn.addEventListener('click', tearDown);
+    overlay.addEventListener('click', (evt) => {
+      if (evt.target === overlay) {
+        tearDown();
+      }
+    });
+
+    requestAnimationFrame(() => overlay.classList.add('open'));
+    document.addEventListener('keydown', onKeyDown);
+    closeBtn.focus({ preventScroll: true });
+  };
+
+  document.querySelectorAll('.gallery-image').forEach(img => {
+    img.setAttribute('tabindex', '0');
+    img.addEventListener('click', () => {
+      const src = img.dataset.full || img.src;
+      openLightbox(src, img.alt);
+    });
+    img.addEventListener('keydown', (evt) => {
+      if (evt.key === 'Enter' || evt.key === ' ') {
+        evt.preventDefault();
+        const src = img.dataset.full || img.src;
+        openLightbox(src, img.alt);
+      }
+    });
+  });
+
   // Index page: randomly place background thumbnails, allow overlap
   if (currentPage === '' || currentPage === 'index.html') {
     const stage = document.getElementById('home-bg');
