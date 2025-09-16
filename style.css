@@ -322,6 +322,58 @@
     color: #444;
   }
 
+  .project-intro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .project-description {
+    flex: 1 1 320px;
+  }
+
+  .project-skills {
+    flex: 0 0 240px;
+    background: #f3f3f3;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  }
+
+  .project-skills h4 {
+    font-size: 1rem;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #222;
+  }
+
+  .project-skills ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .project-skills li {
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  @media (max-width: 768px) {
+    .project-intro {
+      flex-direction: column;
+    }
+
+    .project-skills {
+      width: 100%;
+      flex: 1 1 100%;
+    }
+  }
+
   .project-details {
     background: #ffffff;
     border-radius: 8px;
