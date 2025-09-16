@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const vw = stage.clientWidth;
         const vh = stage.clientHeight;
-        const size = rand(120, 260); // px
+        const size = rand(180, 340); // px
 
         // Define a safe zone around the main heading/buttons to avoid overlap
         const container = document.querySelector('.container');
@@ -166,14 +166,50 @@ document.addEventListener("DOMContentLoaded", function() {
           band = { x0: 0, y0: 0, x1: vw, y1: vh, w: vw, h: vh };
         }
 
-        // Choose position inside band and clamp so the element stays inside the stage
-        let x = rand(band.x0 + size * 0.6, band.x1 - size * 0.6);
-        let y = rand(band.y0 + size * 0.6, band.y1 - size * 0.6);
+        // Choose a position inside band while avoiding overlaps with existing thumbs
+        const existing = Array.from(stage.querySelectorAll('.bg-thumb')).map(node => {
+          const r = node.getBoundingClientRect();
+          return {
+            cx: (r.left + r.right) / 2 - stageRect.left,
+            cy: (r.top + r.bottom) / 2 - stageRect.top,
+            w: r.width,
+            h: r.height
+          };
+        });
 
-        x = Math.max(size * 0.6, Math.min(vw - size * 0.6, x));
-        y = Math.max(size * 0.6, Math.min(vh - size * 0.6, y));
+        const gap = 52; // desired spacing between thumbs
+        const noOverlap = (x, y, w, h) => {
+          for (const r of existing) {
+            const leftA = x - w / 2 - gap;
+            const rightA = x + w / 2 + gap;
+            const topA = y - h / 2 - gap;
+            const bottomA = y + h / 2 + gap;
+            const leftB = r.cx - r.w / 2;
+            const rightB = r.cx + r.w / 2;
+            const topB = r.cy - r.h / 2;
+            const bottomB = r.cy + r.h / 2;
+            if (!(rightA < leftB || leftA > rightB || bottomA < topB || topA > bottomB)) {
+              return false; // overlaps
+            }
+          }
+          return true;
+        };
 
-        const rot = rand(-8, 8).toFixed(2) + 'deg';
+        let x, y;
+        const attempts = 18;
+        for (let i = 0; i < attempts; i++) {
+          const candX = rand(band.x0 + size * 0.6, band.x1 - size * 0.6);
+          const candY = rand(band.y0 + size * 0.6, band.y1 - size * 0.6);
+          const cx = Math.max(size * 0.6, Math.min(vw - size * 0.6, candX));
+          const cy = Math.max(size * 0.6, Math.min(vh - size * 0.6, candY));
+          if (noOverlap(cx, cy, size, size * 0.66)) {
+            x = cx; y = cy; break;
+          }
+          if (i === attempts - 1) { x = cx; y = cy; } // fallback
+        }
+
+        // No tilt for home thumbnails on index page
+        const rot = '0deg';
 
         el.style.width = `${size}px`;
         el.style.height = `${size * 0.66}px`;
@@ -195,16 +231,16 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             el.remove();
           }, 1200);
-        }, 9000 + Math.random() * 6000);
+        }, 10000 + Math.random() * 5000);
       };
 
       // Initial burst
-      const initial = 12;
+      const initial = 8;
       for (let i = 0; i < initial; i++) {
-        setTimeout(spawn, i * 180);
+        setTimeout(spawn, i * 220);
       }
       // Ongoing trickle
-      setInterval(spawn, 1500);
+      setInterval(spawn, 2200);
     }
   }
 });

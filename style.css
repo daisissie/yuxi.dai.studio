@@ -79,7 +79,7 @@
   h1 {
     font-family: 'Skia', sans-serif;
     font-weight: 700;
-    font-size: 5rem;
+    font-size: 4.8rem;
     margin-bottom: 40px;
   }
 
@@ -139,6 +139,18 @@
     text-align: center;
   }
 
+  .tagline-highlight span {
+    display: inline-block;
+    transition: color 0.3s ease, transform 0.3s ease, letter-spacing 0.3s ease;
+    transform-origin: center;
+  }
+
+  .tagline-highlight span:hover {
+    color: #ff7a1f;
+    letter-spacing: 0.04em;
+    transform: scale(1.08);
+  }
+
   .work-page-container .tagline-highlight { align-self: center; }
 
   /* Work Page Layout */
@@ -193,12 +205,15 @@
     background-color: rgba(111, 109, 109, 0.45);
     color: #ffffff;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease, letter-spacing 0.3s ease;
     border-radius: 8px;
   }
   
   .buttons button:hover {
     background-color: rgba(51, 51, 51, 0.9);
+    color: #ff7a1f;
+    letter-spacing: 0.08em;
+    font-weight: 700;
     transform: translateY(-2px);
   }
   
@@ -837,18 +852,96 @@ footer {
 }
 
 footer a {
-  color: #333;
+  color: #333333; /* default dark grey for non-home/work pages */
   text-decoration: none;
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
+/* Keep hover color same as base; still allow scale */
 footer a:hover {
-  color: #666;
+  color: #ff7a1f;
   transform: scale(1.1);
+}
+
+.home footer a:hover,
+.work-page footer a:hover {
+  color: #2200ff;
 }
 
 footer i {
   font-size: 2rem;
+}
+
+
+.project-page footer {
+  position: fixed;
+  top: 28px;
+  left: 45px;
+  bottom: auto;
+  transform: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.project-page footer a {
+  color: #333333;
+}
+
+.project-page footer a:hover {
+  color: #ff7a1f;
+}
+
+.project-page footer i {
+  font-size: 2.2rem;
+}
+
+/* Index (home) page: larger social icons fixed at bottom with slide-in */
+.home footer {
+  position: fixed;
+  left: 50%;
+  bottom: 21%;
+  transform: translate(-50%, 40px);
+  background: transparent;
+  box-shadow: none;
+  z-index: 1100;
+  opacity: 0;
+  animation: footerSlideUp 700ms ease 700ms forwards;
+}
+
+@keyframes footerSlideUp {
+  from { opacity: 0.2; transform: translate(-50%, 40px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.home footer a { margin: 0 14px; }
+.home footer i { font-size: 3rem; }
+
+/* About page: stick footer icons vertically on right side */
+.about-page footer {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  bottom: auto;
+  left: auto;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: transparent;
+  box-shadow: none;
+  z-index: 1100;
+}
+
+.about-page footer a { margin: 0; }
+
+/* White footer icons on home and work pages only */
+.home footer a,
+.work-page footer a {
+  color: #ffffff;
 }
 .about-page .resume-container {
   display: grid;
