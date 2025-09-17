@@ -1022,7 +1022,7 @@ footer i {
 .home footer {
   position: fixed;
   left: 50%;
-  bottom: 21%;
+  bottom: 15%;
   transform: translate(-50%, 40px);
   background: transparent;
   box-shadow: none;
