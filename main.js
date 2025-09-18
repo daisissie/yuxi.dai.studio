@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function() {
         'assets/thumb_nails/a/6_recycle_sphere.jpg',
         'assets/thumb_nails/a/7_new_york_archive.jpg',
         'assets/thumb_nails/a/8_art_center.jpg',
-        'assets/thumb_nails/a/9_pavillian.jpg',
+        'assets/thumb_nails/a/9_pavilion.jpg',
         'assets/thumb_nails/c/1_when_text_meets_map.jpg',
         'assets/thumb_nails/c/2_memory_tides.jpg',
         'assets/thumb_nails/c/3_bento.jpg',
