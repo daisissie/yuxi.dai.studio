@@ -54,10 +54,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Wire up inline project galleries (horizontal scroll with arrows)
   const galleries = document.querySelectorAll('.project-gallery');
+  const galleryLightboxGroups = [];
   galleries.forEach(gal => {
     const track = gal.querySelector('.gallery-track');
     const prevBtn = gal.querySelector('.gallery-arrow.left');
     const nextBtn = gal.querySelector('.gallery-arrow.right');
+    const galleryImages = Array.from(gal.querySelectorAll('.gallery-image'));
+
+    if (galleryImages.length) {
+      galleryLightboxGroups.push(galleryImages);
+    }
+
     if (!track || !prevBtn || !nextBtn) return;
 
     const getStep = () => Math.max(240, Math.floor(track.clientWidth * 0.8));
@@ -77,7 +84,24 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   // Lightbox for project gallery images
-  const openLightbox = (src, alt = '') => {
+  const openLightbox = (items, startIndex = 0) => {
+    if (!items || !items.length) return;
+
+    const resolveItem = (index) => {
+      const clampedIndex = Math.min(Math.max(index, 0), items.length - 1);
+      const el = items[clampedIndex];
+      return {
+        index: clampedIndex,
+        element: el,
+        src: el.dataset.full || el.src,
+        alt: el.alt || ''
+      };
+    };
+
+    const originFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const hasCarousel = items.length > 1;
+    const initialItem = resolveItem(startIndex);
+    let currentIndex = initialItem.index;
     const overlay = document.createElement('div');
     overlay.className = 'lightbox-overlay';
 
@@ -90,24 +114,106 @@ document.addEventListener("DOMContentLoaded", function() {
     closeBtn.textContent = '×';
 
     const img = document.createElement('img');
-    img.src = src;
-    img.alt = alt;
+    img.src = initialItem.src;
+    img.alt = initialItem.alt;
     img.className = 'lightbox-image';
+    img.draggable = false;
+
+    const mediaWrap = document.createElement('div');
+    mediaWrap.className = 'lightbox-media';
+    mediaWrap.appendChild(img);
 
     frame.appendChild(closeBtn);
-    frame.appendChild(img);
+    frame.appendChild(mediaWrap);
+
+    if (hasCarousel) {
+      const hint = document.createElement('div');
+      hint.className = 'lightbox-hint';
+      hint.textContent = 'Use arrows to flip through images.';
+      frame.appendChild(hint);
+    }
+
+    let prevNav = null;
+    let nextNav = null;
+
+    const updateNavState = () => {
+      if (!prevNav || !nextNav) return;
+      prevNav.disabled = currentIndex <= 0;
+      nextNav.disabled = currentIndex >= items.length - 1;
+    };
+
+    const showItem = (targetIndex) => {
+      const nextItem = resolveItem(targetIndex);
+      if (nextItem.index === currentIndex) return;
+      currentIndex = nextItem.index;
+      img.src = nextItem.src;
+      img.alt = nextItem.alt;
+      updateNavState();
+    };
+
+    const handlePrev = () => {
+      if (currentIndex <= 0) return;
+      showItem(currentIndex - 1);
+    };
+
+    const handleNext = () => {
+      if (currentIndex >= items.length - 1) return;
+      showItem(currentIndex + 1);
+    };
+
+    if (hasCarousel) {
+      prevNav = document.createElement('button');
+      prevNav.type = 'button';
+      prevNav.className = 'lightbox-nav prev';
+      prevNav.setAttribute('aria-label', 'View previous image');
+      prevNav.innerHTML = '&#10094;';
+      prevNav.addEventListener('click', (evt) => {
+        evt.stopPropagation();
+        handlePrev();
+      });
+
+      nextNav = document.createElement('button');
+      nextNav.type = 'button';
+      nextNav.className = 'lightbox-nav next';
+      nextNav.setAttribute('aria-label', 'View next image');
+      nextNav.innerHTML = '&#10095;';
+      nextNav.addEventListener('click', (evt) => {
+        evt.stopPropagation();
+        handleNext();
+      });
+
+      frame.appendChild(prevNav);
+      frame.appendChild(nextNav);
+    }
+
+    updateNavState();
     overlay.appendChild(frame);
     document.body.appendChild(overlay);
 
     const tearDown = () => {
       document.removeEventListener('keydown', onKeyDown);
       overlay.classList.add('closing');
-      setTimeout(() => overlay.remove(), 220);
+      setTimeout(() => {
+        overlay.remove();
+        if (originFocus && typeof originFocus.focus === 'function') {
+          originFocus.focus({ preventScroll: true });
+        }
+      }, 220);
     };
 
     const onKeyDown = (evt) => {
       if (evt.key === 'Escape') {
         tearDown();
+        return;
+      }
+      if (hasCarousel) {
+        if (evt.key === 'ArrowLeft') {
+          evt.preventDefault();
+          handlePrev();
+        } else if (evt.key === 'ArrowRight') {
+          evt.preventDefault();
+          handleNext();
+        }
       }
     };
 
@@ -123,20 +229,39 @@ document.addEventListener("DOMContentLoaded", function() {
     closeBtn.focus({ preventScroll: true });
   };
 
-  document.querySelectorAll('.gallery-image').forEach(img => {
-    img.setAttribute('tabindex', '0');
-    img.addEventListener('click', () => {
-      const src = img.dataset.full || img.src;
-      openLightbox(src, img.alt);
-    });
-    img.addEventListener('keydown', (evt) => {
-      if (evt.key === 'Enter' || evt.key === ' ') {
-        evt.preventDefault();
-        const src = img.dataset.full || img.src;
-        openLightbox(src, img.alt);
+  const wireLightboxTriggers = (images) => {
+    if (!images || !images.length) return;
+
+    images.forEach(imgEl => {
+      if (imgEl.dataset.lightboxBound === '1') return;
+      imgEl.dataset.lightboxBound = '1';
+
+      if (!imgEl.hasAttribute('tabindex')) {
+        imgEl.setAttribute('tabindex', '0');
       }
+
+      const launchLightbox = () => {
+        const startIndex = images.indexOf(imgEl);
+        openLightbox(images, startIndex >= 0 ? startIndex : 0);
+      };
+
+      imgEl.addEventListener('click', () => {
+        launchLightbox();
+      });
+
+      imgEl.addEventListener('keydown', (evt) => {
+        if (evt.key === 'Enter' || evt.key === ' ') {
+          evt.preventDefault();
+          launchLightbox();
+        }
+      });
     });
-  });
+  };
+
+  galleryLightboxGroups.forEach(group => wireLightboxTriggers(group));
+
+  const standaloneImages = Array.from(document.querySelectorAll('.gallery-image')).filter(img => !img.closest('.project-gallery'));
+  wireLightboxTriggers(standaloneImages);
 
   // Index page: randomly place background thumbnails, allow overlap
   if (currentPage === '' || currentPage === 'index.html') {
