@@ -884,7 +884,7 @@
 
 .header-link {
   font-family: "Quokka", "Loos", Arial, sans-serif;
-  font-size: 1 rem;
+  font-size: 1rem;
   color: #222;
   text-decoration: none;
   font-weight: bold;
@@ -1187,5 +1187,233 @@ footer i {
   .about-page .vertical-name-fixed {
     top: 96px;
     font-size: 1.25rem;
+  }
+}
+
+/* Responsive layout refinements */
+@media (max-width: 900px) {
+  .floating-header {
+    width: calc(100% - 48px);
+    max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-top: 100px;
+  }
+
+  .container {
+    padding: 16px;
+  }
+
+  .floating-header {
+    top: 12px;
+    padding: 0.65rem 1.25rem;
+    border-radius: 1rem;
+    gap: 12px;
+  }
+
+  .header-link {
+    font-size: 0.95rem;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+
+  .home {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 32px 16px 72px;
+  }
+
+  .home h1 {
+    font-size: 2.8rem;
+    margin-bottom: 24px;
+  }
+
+  .home h2 {
+    font-size: 1.4rem;
+  }
+
+  .tagline-highlight {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    gap: 6px;
+    flex-wrap: wrap;
+    line-height: 1.5;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    margin-top: 16px;
+  }
+
+  .buttons button {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 1.05rem;
+  }
+
+  .work-title {
+    font-size: 2.4rem;
+  }
+
+  .intro-container {
+    padding: 24px;
+    margin: 16px 0;
+  }
+
+  .work-sections {
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 18px;
+  }
+
+  .work-column {
+    padding: 20px;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0;
+  }
+
+  .project-card {
+    aspect-ratio: auto;
+    min-height: 220px;
+  }
+
+  .project-section {
+    padding: 24px 20px;
+  }
+
+  .project-content p {
+    font-size: 1rem;
+  }
+
+  .project-gallery .gallery-track {
+    gap: 10px;
+  }
+
+  .project-gallery .gallery-track img,
+  .project-gallery .gallery-image {
+    width: min(100%, 280px);
+    height: auto;
+    max-height: 220px;
+  }
+
+  .project-gallery .gallery-arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  footer {
+    position: static;
+    margin: 32px auto 16px;
+    transform: none;
+    gap: 18px;
+  }
+
+  footer i {
+    font-size: 1.6rem;
+  }
+
+  .project-page footer {
+    position: static;
+    margin-top: 32px;
+  }
+
+  .project-page footer i {
+    font-size: 1.8rem;
+  }
+
+  .home footer {
+    position: static;
+    bottom: auto;
+    animation: none;
+    opacity: 1;
+    transform: none;
+    margin-top: 32px;
+  }
+
+  .home footer i {
+    font-size: 2rem;
+  }
+
+  .about-page footer {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .about-page .resume-container {
+    grid-template-columns: 1fr;
+  }
+
+  .about-page .vertical-name-fixed {
+    display: none;
+  }
+
+  .about-page .container > h1 {
+    display: block;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 88px;
+  }
+
+  .floating-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .header-link {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  h1 {
+    font-size: 2.1rem;
+  }
+
+  .home h1 {
+    font-size: 2.4rem;
+  }
+
+  .home h2 {
+    font-size: 1.2rem;
+  }
+
+  .tagline-highlight {
+    font-size: 0.9rem;
+  }
+
+  .buttons button {
+    font-size: 1rem;
+    padding: 12px 16px;
+  }
+
+  .intro-container {
+    padding: 20px;
+  }
+
+  .project-section {
+    padding: 20px 16px;
   }
 }
