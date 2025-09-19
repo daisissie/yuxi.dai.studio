@@ -1,1 +1,2 @@
 welcome to my website
+A lightweight portfolio for Yuxi “Sissie” Dai, showcasing architectural design, computational research, and personal creative work. The site is built with plain HTML, CSS, and vanilla JS so it loads quickly and is easy to maintain.
