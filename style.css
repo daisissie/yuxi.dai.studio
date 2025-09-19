@@ -775,7 +775,7 @@
   .project-card {
     background: white;
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
     aspect-ratio: 1.5;
@@ -853,6 +853,9 @@
   .index-grid .project-card:nth-child(16) { animation-delay: 0.75s; }
   .index-grid .project-card:nth-child(17) { animation-delay: 0.80s; }
   .index-grid .project-card:nth-child(18) { animation-delay: 0.85s; }
+  .index-grid .project-card:nth-child(19) { animation-delay: 0.90s; }
+  .index-grid .project-card:nth-child(20) { animation-delay: 0.95s; }
+  .index-grid .project-card:nth-child(21) { animation-delay: 1.00s; }
 
   .project-card h2 {
     margin-bottom: 15px;
@@ -1150,7 +1153,7 @@ footer i {
 /* White footer icons on home and work pages only */
 .home footer a,
 .work-page footer a {
-  color: #ffffff;
+  color: #e2e2e2;
 }
 .about-page .resume-container {
   display: grid;

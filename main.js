@@ -269,20 +269,24 @@ document.addEventListener("DOMContentLoaded", function() {
     if (stage) {
       const images = [
         'assets/thumb_nails/a/1_casita_city.jpg',
-        'assets/thumb_nails/c/5_terra_tower.jpg',
         'assets/thumb_nails/a/4_between_mounds.jpg',
         'assets/thumb_nails/a/5_lpc_headquarter.jpg',
         'assets/thumb_nails/a/6_recycle_sphere.jpg',
         'assets/thumb_nails/a/7_new_york_archive.jpg',
         'assets/thumb_nails/a/8_art_center.jpg',
         'assets/thumb_nails/a/9_pavilion.jpg',
+        'assets/thumb_nails/a/10_renovation.jpg',
+        'assets/thumb_nails/a/11_urban_scale.jpg',
+        'assets/thumb_nails/a/12_mix-use.jpg',
         'assets/thumb_nails/c/1_when_text_meets_map.jpg',
         'assets/thumb_nails/c/2_memory_tides.jpg',
         'assets/thumb_nails/c/3_bento.jpg',
         'assets/thumb_nails/c/4_all_data_are_spatial.jpg',
+        'assets/thumb_nails/c/5_terra_tower.jpg',
         'assets/thumb_nails/c/6_information_power.jpg',
         'assets/thumb_nails/c/7_city_glitch.jpg',
         'assets/thumb_nails/c/8_seeing_with_algorithm.jpg',
+        'assets/thumb_nails/p/1_drawing.jpg',
         'assets/thumb_nails/p/2_photography.jpg',
         'assets/thumb_nails/p/3_jelwery.jpg',
       ];
@@ -290,6 +294,9 @@ document.addEventListener("DOMContentLoaded", function() {
       const rand = (min, max) => Math.random() * (max - min) + min;
       const pick = arr => arr[Math.floor(Math.random() * arr.length)];
       const inUse = new Set(); // ensure no duplicate image appears at once
+      const MIN_VISIBLE_THUMBS = 7;
+      const countActiveThumbs = () => stage.querySelectorAll('.bg-thumb').length;
+      let ensureMinimumThumbs = () => {};
 
       const spawn = () => {
         const el = document.createElement('div');
@@ -298,6 +305,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const candidates = images.filter(src => !inUse.has(src));
         if (candidates.length === 0) {
           // all images are on screen; skip this spawn
+          setTimeout(ensureMinimumThumbs, 500);
           return;
         }
         const src = pick(candidates);
@@ -307,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const vw = stage.clientWidth;
         const vh = stage.clientHeight;
-        const size = rand(180, 340); // px
+        const size = rand(220, 360); // px
 
         // Define a safe zone around the main heading/buttons to avoid overlap
         const container = document.querySelector('.container');
@@ -353,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function() {
           band = { x0: 0, y0: 0, x1: vw, y1: vh, w: vw, h: vh };
         }
 
-        // Choose a position inside band while avoiding overlaps with existing thumbs
+        // Choose a position inside band while keeping overlaps within 10%
         const existing = Array.from(stage.querySelectorAll('.bg-thumb')).map(node => {
           const r = node.getBoundingClientRect();
           return {
@@ -364,42 +372,73 @@ document.addEventListener("DOMContentLoaded", function() {
           };
         });
 
-        const gap = 52; // desired spacing between thumbs
-        const noOverlap = (x, y, w, h) => {
+        const maxOverlapRatio = 0.20; // allow up to 20% area overlap between thumbs
+        const thumbHeight = size * 0.66;
+        const evaluateOverlapRatio = (x, y) => {
+          const leftA = x - size / 2;
+          const rightA = x + size / 2;
+          const topA = y - thumbHeight / 2;
+          const bottomA = y + thumbHeight / 2;
+          const areaA = size * thumbHeight;
+          let worst = 0;
+
           for (const r of existing) {
-            const leftA = x - w / 2 - gap;
-            const rightA = x + w / 2 + gap;
-            const topA = y - h / 2 - gap;
-            const bottomA = y + h / 2 + gap;
             const leftB = r.cx - r.w / 2;
             const rightB = r.cx + r.w / 2;
             const topB = r.cy - r.h / 2;
             const bottomB = r.cy + r.h / 2;
-            if (!(rightA < leftB || leftA > rightB || bottomA < topB || topA > bottomB)) {
-              return false; // overlaps
+
+            const interW = Math.max(0, Math.min(rightA, rightB) - Math.max(leftA, leftB));
+            const interH = Math.max(0, Math.min(bottomA, bottomB) - Math.max(topA, topB));
+            if (interW <= 0 || interH <= 0) continue;
+
+            const overlapArea = interW * interH;
+            const areaB = r.w * r.h;
+            const ratioA = overlapArea / areaA;
+            const ratioB = overlapArea / areaB;
+            worst = Math.max(worst, ratioA, ratioB);
+            if (worst > maxOverlapRatio) {
+              return worst;
             }
           }
-          return true;
+
+          return worst;
         };
 
-        let x, y;
+        let x;
+        let y;
+        let bestCandidate = null;
         const attempts = 18;
         for (let i = 0; i < attempts; i++) {
           const candX = rand(band.x0 + size * 0.6, band.x1 - size * 0.6);
-          const candY = rand(band.y0 + size * 0.6, band.y1 - size * 0.6);
+          const candY = rand(band.y0 + thumbHeight * 0.6, band.y1 - thumbHeight * 0.6);
           const cx = Math.max(size * 0.6, Math.min(vw - size * 0.6, candX));
-          const cy = Math.max(size * 0.6, Math.min(vh - size * 0.6, candY));
-          if (noOverlap(cx, cy, size, size * 0.66)) {
+          const cy = Math.max(thumbHeight * 0.6, Math.min(vh - thumbHeight * 0.6, candY));
+          const ratio = evaluateOverlapRatio(cx, cy);
+          if (ratio <= maxOverlapRatio) {
             x = cx; y = cy; break;
           }
-          if (i === attempts - 1) { x = cx; y = cy; } // fallback
+          if (!bestCandidate || ratio < bestCandidate.ratio) {
+            bestCandidate = { x: cx, y: cy, ratio };
+          }
+        }
+
+        if (x === undefined && bestCandidate && bestCandidate.ratio <= maxOverlapRatio) {
+          x = bestCandidate.x;
+          y = bestCandidate.y;
+        }
+
+        if (x === undefined) {
+          inUse.delete(src);
+          setTimeout(ensureMinimumThumbs, 400);
+          return; // skip this spawn; will try again later
         }
 
         // No tilt for home thumbnails on index page
         const rot = '0deg';
 
         el.style.width = `${size}px`;
-        el.style.height = `${size * 0.66}px`;
+        el.style.height = `${thumbHeight}px`;
         el.style.left = `${x}px`;
         el.style.top = `${y}px`;
         el.style.setProperty('--rot', rot);
@@ -417,17 +456,31 @@ document.addEventListener("DOMContentLoaded", function() {
               inUse.delete(el.dataset.src);
             }
             el.remove();
+            ensureMinimumThumbs();
           }, 1200);
         }, 10000 + Math.random() * 5000);
       };
 
-      // Initial burst
+      ensureMinimumThumbs = () => {
+        const deficit = MIN_VISIBLE_THUMBS - countActiveThumbs();
+        if (deficit <= 0) return;
+        for (let i = 0; i < deficit; i++) {
+          setTimeout(spawn, i * 160);
+        }
+      };
+
+      // Delay the first wave so the hero content settles before thumbs appear
+      const startDelay = 600;
       const initial = 8;
       for (let i = 0; i < initial; i++) {
-        setTimeout(spawn, i * 220);
+        setTimeout(spawn, startDelay + i * 220);
       }
-      // Ongoing trickle
-      setInterval(spawn, 2200);
+      setTimeout(ensureMinimumThumbs, startDelay + initial * 220 + 400);
+      // Ongoing trickle begins after the initial burst finishes
+      setTimeout(() => {
+        setInterval(spawn, 2200);
+        ensureMinimumThumbs();
+      }, startDelay + initial * 220);
     }
   }
 });
