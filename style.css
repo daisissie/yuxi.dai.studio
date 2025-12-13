@@ -374,6 +374,10 @@
     text-align: left;
   }
 
+.project-page h3 {
+  color: #fdfdfd;
+}
+
   /* Description text - p elements */
   p {
     font-family: 'Cambria', serif;
@@ -389,8 +393,21 @@
     text-align: center;
   }
 
-  /* Prominent tagline under Work title */
-  .tagline-highlight {
+.work-page .work-title {
+  color: #fdfdfd;
+}
+
+/* Page titles on project pages */
+.project-page .page-title {
+  color: #fdfdfd;
+  font-family: 'Skia', sans-serif;
+  font-weight: 700;
+  font-size: 2.4rem;
+  margin: 0 0 10px;
+}
+
+/* Prominent tagline under Work title */
+.tagline-highlight {
     display: inline-block;
     margin: 0 auto 18px;
     padding: 10px 16px;
@@ -688,10 +705,12 @@
   }
 
   .project-details {
-    background: #ffffff;
+    background: rgba(255,255,255,0.08);
     border-radius: 8px;
     padding: 20px;
     margin-top: 20px;
+    color: #fdfdfd;
+    border: 1px solid rgba(255,255,255,0.16);
   }
 
   /* Inline image gallery before project info */
@@ -1433,18 +1452,6 @@ footer i {
   box-shadow: none;
 }
 
-.project-page footer a {
-  color: #333333;
-}
-
-.project-page footer a:hover {
-  color: #ff7a1f;
-}
-
-.project-page footer i {
-  font-size: 2.2rem;
-}
-
 /* Index (home) page: larger social icons fixed at bottom with slide-in */
 .home footer {
   position: fixed;
@@ -1487,8 +1494,26 @@ footer i {
 
 /* White footer icons on home and work pages only */
 .home footer a,
-.work-page footer a {
+.work-page footer a,
+.about-page footer a {
   color: #e2e2e2;
+}
+
+.about-page footer a:hover {
+  color: #ff7a1f;
+}
+
+/* Project pages (architecture, computation, life): white by default, orange on hover */
+.project-page footer a {
+  color: #e2e2e2;
+}
+
+.project-page footer a:hover {
+  color: #ff7a1f;
+}
+
+.project-page footer i {
+  font-size: 2.2rem;
 }
 .about-page .resume-container {
   display: grid;
@@ -1506,7 +1531,7 @@ footer i {
   font-weight: 700;
   font-size: 2rem;
   letter-spacing: 0.09em;
-  color: #222;
+  color: #fdfdfd;
   text-shadow: 1px 1px 6px rgba(0,0,0,0.25);
   height: max-content;
   align-self: start;
