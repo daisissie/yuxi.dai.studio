@@ -80,7 +80,7 @@
 .hero-grid {
   display: grid;
   grid-template-columns: 1.3fr 0.7fr;
-  gap: 32px;
+  gap: 28px;
   align-items: start;
 }
 
@@ -89,7 +89,7 @@
   line-height: 1.1;
   color: #fdfdfd;
   margin-bottom: 16px;
-  text-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  text-shadow: 0 8px 24px rgba(0,0,0,0.24);
 }
 
 .eyebrow {
@@ -107,9 +107,9 @@
 }
 
 .lede {
-  color: #e8edf7;
+  color: #e1e8f6;
   max-width: 720px;
-  font-size: 1.05rem;
+  font-size: 1rem;
   margin-bottom: 18px;
 }
 
@@ -247,39 +247,32 @@
 .quick-nav {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 .quick-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 18px;
   color: #fdfdfd;
   text-decoration: none;
-  border: 1px solid rgba(255,255,255,0.12);
-  min-height: 150px;
+  border: 1px solid rgba(255,255,255,0.14);
+  min-height: 128px;
   display: grid;
   align-content: space-between;
-  transition: transform 160ms ease, box-shadow 160ms ease;
-}
-
-.quick-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(145deg, rgba(0,0,0,0.38), rgba(0,0,0,0.62));
-  z-index: 1;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 
 .quick-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+  border-color: rgba(255,255,255,0.28);
 }
 
-.quick-card span {
-  position: relative;
-  z-index: 2;
+.quick-card:focus-visible {
+  outline: 3px solid rgba(156,215,255,0.9);
+  outline-offset: 3px;
 }
 
 .quick-card .quick-label {
@@ -288,13 +281,27 @@
 }
 
 .quick-card .quick-desc {
-  font-size: 0.95rem;
-  color: #d7e3ff;
+  font-size: 0.92rem;
+  color: rgba(245, 248, 255, 0.9);
 }
 
-.quick-card.arch { background-image: linear-gradient(120deg, rgba(255,138,61,0.55), rgba(255,138,61,0.2)), url('assets/thumb_nails/whole_index/1_architectural.jpg'); background-size: cover, contain; background-position: center; background-repeat: no-repeat; }
-.quick-card.comp { background-image: linear-gradient(120deg, rgba(156,215,255,0.6), rgba(12,46,120,0.55)), url('assets/thumb_nails/whole_index/2_computational.jpg'); background-size: cover, contain; background-position: center; background-repeat: no-repeat; }
-.quick-card.life { background-image: linear-gradient(120deg, rgba(255,255,255,0.45), rgba(11,18,33,0.7)), url('assets/thumb_nails/whole_index/3_personal.jpg'); background-size: cover, contain; background-position: center; background-repeat: no-repeat; }
+.quick-card.arch {
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(255,178,123,0.45), transparent 58%),
+    linear-gradient(135deg, rgba(255,138,61,0.62), rgba(55,33,18,0.55));
+}
+
+.quick-card.comp {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(156,215,255,0.45), transparent 58%),
+    linear-gradient(135deg, rgba(84,147,204,0.62), rgba(20,43,88,0.62));
+}
+
+.quick-card.life {
+  background:
+    radial-gradient(120% 140% at 0% 100%, rgba(255,214,173,0.38), transparent 60%),
+    linear-gradient(135deg, rgba(104,147,138,0.54), rgba(33,61,62,0.62));
+}
 
 @media (max-width: 900px) {
   .hero-grid {
@@ -309,7 +316,7 @@
   .hero-left h1 {
     font-size: 2.6rem;
   }
-  .quick-card { min-height: 140px; }
+  .quick-card { min-height: 120px; }
 }
 
 /* Floating background thumbnails */
@@ -1780,5 +1787,47 @@ footer i {
 
   .project-section {
     padding: 20px 16px;
+  }
+}
+
+/* Life page only: Pinterest-style vertical masonry image layout */
+.life-page .project-details {
+  border-radius: 0;
+}
+
+.life-page .project-gallery .gallery-arrow {
+  display: none;
+}
+
+.life-page .project-gallery .gallery-track {
+  display: block;
+  column-count: 3;
+  column-gap: 14px;
+  overflow: visible;
+  padding-bottom: 0;
+  scroll-snap-type: none;
+}
+
+.life-page .project-gallery .gallery-track .gallery-image,
+.life-page .project-gallery .gallery-track img {
+  width: 100%;
+  height: auto;
+  max-height: none;
+  margin: 0 0 14px;
+  display: block;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+@media (max-width: 1100px) {
+  .life-page .project-gallery .gallery-track {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .life-page .project-gallery .gallery-track {
+    column-count: 1;
+    column-gap: 0;
   }
 }
