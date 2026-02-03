@@ -1819,6 +1819,13 @@ footer i {
   page-break-inside: avoid;
 }
 
+.life-page .project-gallery .gallery-track .featured-image {
+  column-span: all;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: min(760px, 100%);
+}
+
 @media (max-width: 1100px) {
   .life-page .project-gallery .gallery-track {
     column-count: 2;
