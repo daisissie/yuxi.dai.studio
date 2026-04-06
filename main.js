@@ -44,7 +44,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
-  if (currentPage === 'architecture.html') {
+  if (currentPage === 'work.html') {
+    // Expand all categories since all content lives on this single page
+    document.querySelectorAll('.main-category').forEach(cat => {
+      cat.classList.add('expanded');
+    });
+    document.querySelectorAll('.project-group').forEach(group => {
+      group.classList.add('expanded');
+    });
+  } else if (currentPage === 'architecture.html') {
     expandForPage('architecture.html');
   } else if (currentPage === 'computation.html') {
     expandForPage('computation.html');

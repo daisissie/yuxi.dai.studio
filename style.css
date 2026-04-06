@@ -700,6 +700,24 @@
     margin-bottom: 0;
   }
 
+  /* Work page category sections */
+  .work-category-section {
+    scroll-margin-top: 100px;
+    padding-top: 56px;
+    margin-bottom: 40px;
+  }
+
+  .work-category-section + .work-category-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Divider between thumbnail grid and detail sections */
+  .work-category-section .project-sections {
+    margin-top: 0;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
   /* Project sections styling */
   .project-sections {
     margin-top: 60px;
