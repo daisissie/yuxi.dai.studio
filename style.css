@@ -1202,6 +1202,23 @@
     line-height: 1.5;
   }
 
+  .visitor-globe {
+    display: flex;
+    justify-content: center;
+    min-height: 220px;
+    margin-top: 42px;
+    padding-bottom: 12px;
+  }
+
+  .visitor-globe .mmvst_outer {
+    width: 200px !important;
+    margin: 0 auto !important;
+  }
+
+  .visitor-globe .mmvst_inner {
+    display: block !important;
+  }
+
   /* Responsive adjustments for resume */
   @media (max-width: 768px) {
     .resume-content {
