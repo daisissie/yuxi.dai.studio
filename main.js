@@ -1,294 +1,86 @@
-// This JavaScript file can be used to add interactivity.
-document.addEventListener("DOMContentLoaded", function() {
-  // Determine current page for nav behavior
-  const currentPage = window.location.pathname.split('/').pop();
+// Native links and disclosures remain usable without JavaScript.
+(() => {
+  const legacyProjects = {
+    'text-meets-map-section': 'projects/when-text-meets-map.html',
+    'memory-tides-section': 'projects/memory-tides.html',
+    'casita-city-section': 'projects/casita-city.html',
+    'jewelry-section': 'projects/suzhou-jewelry.html',
+    'photography-section': 'explorations.html#photography',
+    'drawings-section': 'explorations.html#drawings'
+  };
+  function followHash() {
+    let id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    if (!id) return;
+    if (location.pathname.endsWith('/work.html') && legacyProjects[id]) {
+      location.replace(legacyProjects[id]);
+      return;
+    }
+    const target = document.getElementById(id);
+    if (!target) return;
+    const details = target.closest('details');
+    if (details) {
+      details.open = true;
+      requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+    }
+  }
+  followHash();
+  window.addEventListener('hashchange', followHash);
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
 
-  // Expand/collapse only when clicking the plus/minus area; clicking text navigates
-  const mainCategories = document.querySelectorAll('.main-category');
-
-  mainCategories.forEach(category => {
-    category.addEventListener('click', function(e) {
-      const rect = this.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const toggleZoneWidth = 28; // px from the right side
-      const clickedToggleZone = (rect.right - e.clientX) <= toggleZoneWidth;
-
-      if (clickedToggleZone) {
-        // Find adjacent project group; only toggle if it exists
-        const parentLi = this.closest('li');
-        const projectGroup = parentLi ? parentLi.nextElementSibling : null;
-        if (projectGroup && projectGroup.classList.contains('project-group')) {
-          e.preventDefault();
-          this.classList.toggle('expanded');
-          projectGroup.classList.toggle('expanded');
-          return;
-        }
-        // No expandable group, fall through to normal navigation
-      }
-
-      // Outside toggle zone: allow default navigation to href
-      // No preventDefault here; clicking text always navigates
-    });
+  const links = Array.from(document.querySelectorAll('a[data-gallery]'));
+  if (!links.length || typeof HTMLDialogElement === 'undefined') return;
+  const dialog = document.createElement('dialog');
+  dialog.className = 'lightbox';
+  dialog.setAttribute('aria-label', 'Image viewer');
+  dialog.innerHTML = `<div class="lightbox-bar"><span class="lightbox-count" aria-live="polite"></span><button type="button" data-close aria-label="Close image viewer">Close ×</button></div><img class="lightbox-image" alt=""><div class="lightbox-bottom"><p class="lightbox-caption"></p><div class="lightbox-controls"><button type="button" data-prev aria-label="Previous image">←</button><button type="button" data-next aria-label="Next image">→</button></div></div>`;
+  document.body.append(dialog);
+  const image = dialog.querySelector('img');
+  const count = dialog.querySelector('.lightbox-count');
+  const caption = dialog.querySelector('.lightbox-caption');
+  const previous = dialog.querySelector('[data-prev]');
+  const next = dialog.querySelector('[data-next]');
+  let group = [];
+  let current = 0;
+  let origin = null;
+  function show(index) {
+    if (index < 0 || index >= group.length) return;
+    current = index;
+    const link = group[current];
+    const thumbnail = link.querySelector('img');
+    image.src = link.href;
+    image.alt = thumbnail.alt;
+    caption.textContent = link.closest('figure')?.querySelector('figcaption')?.textContent || thumbnail.alt;
+    count.textContent = `${current + 1} / ${group.length}`;
+    previous.disabled = current === 0;
+    next.disabled = current === group.length - 1;
+  }
+  links.forEach(link => link.addEventListener('click', event => {
+    // Preserve opening an image in another tab with modifier keys.
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    origin = link;
+    group = links.filter(item => item.dataset.gallery === link.dataset.gallery);
+    show(group.indexOf(link));
+    dialog.showModal();
+    document.body.classList.add('image-open');
+    dialog.querySelector('[data-close]').focus();
+  }));
+  previous.addEventListener('click', () => show(current - 1));
+  next.addEventListener('click', () => show(current + 1));
+  dialog.querySelector('[data-close]').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('close', () => {
+    document.body.classList.remove('image-open');
+    image.removeAttribute('src');
+    origin?.focus({ preventScroll: true });
   });
-
-  // Set default expanded state based on current page
-  const expandForPage = (page) => {
-    const category = document.querySelector(`a[href="${page}"]`);
-    if (category) {
-      category.classList.add('expanded');
-      const parentLi = category.closest('li');
-      const projectGroup = parentLi ? parentLi.nextElementSibling : null;
-      if (projectGroup && projectGroup.classList.contains('project-group')) {
-        projectGroup.classList.add('expanded');
-      }
-    }
-  };
-
-  if (currentPage === 'work.html') {
-    // Expand all categories since all content lives on this single page
-    document.querySelectorAll('.main-category').forEach(cat => {
-      cat.classList.add('expanded');
-    });
-    document.querySelectorAll('.project-group').forEach(group => {
-      group.classList.add('expanded');
-    });
-  } else if (currentPage === 'architecture.html') {
-    expandForPage('architecture.html');
-  } else if (currentPage === 'computation.html') {
-    expandForPage('computation.html');
-  } else if (currentPage === 'life.html') {
-    expandForPage('life.html');
-  }
-
-  // Wire up inline project galleries (horizontal scroll with arrows)
-  const galleries = document.querySelectorAll('.project-gallery');
-  const galleryLightboxGroups = [];
-  galleries.forEach(gal => {
-    const track = gal.querySelector('.gallery-track');
-    const prevBtn = gal.querySelector('.gallery-arrow.left');
-    const nextBtn = gal.querySelector('.gallery-arrow.right');
-    const galleryImages = Array.from(gal.querySelectorAll('.gallery-image'));
-
-    if (galleryImages.length) {
-      galleryLightboxGroups.push(galleryImages);
-    }
-
-    if (!track || !prevBtn || !nextBtn) return;
-
-    const getStep = () => Math.max(240, Math.floor(track.clientWidth * 0.8));
-    const isRTL = () => getComputedStyle(track).direction === 'rtl';
-
-    prevBtn.addEventListener('click', () => {
-      const step = getStep();
-      const dir = isRTL() ? step : -step; // in RTL, prev moves content rightward visually
-      track.scrollBy({ left: dir, behavior: 'smooth' });
-    });
-
-    nextBtn.addEventListener('click', () => {
-      const step = getStep();
-      const dir = isRTL() ? -step : step; // in RTL, next moves content leftward visually
-      track.scrollBy({ left: dir, behavior: 'smooth' });
-    });
+  dialog.addEventListener('click', event => {
+    if (event.target !== dialog) return;
+    const rect = dialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
   });
-
-  // Lightbox for project gallery images
-  const openLightbox = (items, startIndex = 0) => {
-    if (!items || !items.length) return;
-
-    const resolveItem = (index) => {
-      const clampedIndex = Math.min(Math.max(index, 0), items.length - 1);
-      const el = items[clampedIndex];
-      return {
-        index: clampedIndex,
-        element: el,
-        src: el.dataset.full || el.src,
-        alt: el.alt || ''
-      };
-    };
-
-    const originFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const hasCarousel = items.length > 1;
-    const initialItem = resolveItem(startIndex);
-    let currentIndex = initialItem.index;
-    const overlay = document.createElement('div');
-    overlay.className = 'lightbox-overlay';
-
-    const frame = document.createElement('div');
-    frame.className = 'lightbox-frame';
-
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'lightbox-close';
-    closeBtn.setAttribute('aria-label', 'Close image');
-    closeBtn.textContent = '×';
-
-    const img = document.createElement('img');
-    img.src = initialItem.src;
-    img.alt = initialItem.alt;
-    img.className = 'lightbox-image';
-    img.draggable = false;
-
-    const mediaWrap = document.createElement('div');
-    mediaWrap.className = 'lightbox-media';
-    mediaWrap.appendChild(img);
-
-    frame.appendChild(closeBtn);
-    frame.appendChild(mediaWrap);
-
-    if (hasCarousel) {
-      const hint = document.createElement('div');
-      hint.className = 'lightbox-hint';
-      hint.textContent = 'Use arrows to flip through images.';
-      frame.appendChild(hint);
-    }
-
-    let prevNav = null;
-    let nextNav = null;
-
-    const updateNavState = () => {
-      if (!prevNav || !nextNav) return;
-      prevNav.disabled = currentIndex <= 0;
-      nextNav.disabled = currentIndex >= items.length - 1;
-    };
-
-    const showItem = (targetIndex) => {
-      const nextItem = resolveItem(targetIndex);
-      if (nextItem.index === currentIndex) return;
-      currentIndex = nextItem.index;
-      img.src = nextItem.src;
-      img.alt = nextItem.alt;
-      updateNavState();
-    };
-
-    const handlePrev = () => {
-      if (currentIndex <= 0) return;
-      showItem(currentIndex - 1);
-    };
-
-    const handleNext = () => {
-      if (currentIndex >= items.length - 1) return;
-      showItem(currentIndex + 1);
-    };
-
-    if (hasCarousel) {
-      prevNav = document.createElement('button');
-      prevNav.type = 'button';
-      prevNav.className = 'lightbox-nav prev';
-      prevNav.setAttribute('aria-label', 'View previous image');
-      prevNav.innerHTML = '&#10094;';
-      prevNav.addEventListener('click', (evt) => {
-        evt.stopPropagation();
-        handlePrev();
-      });
-
-      nextNav = document.createElement('button');
-      nextNav.type = 'button';
-      nextNav.className = 'lightbox-nav next';
-      nextNav.setAttribute('aria-label', 'View next image');
-      nextNav.innerHTML = '&#10095;';
-      nextNav.addEventListener('click', (evt) => {
-        evt.stopPropagation();
-        handleNext();
-      });
-
-      frame.appendChild(prevNav);
-      frame.appendChild(nextNav);
-    }
-
-    updateNavState();
-    overlay.appendChild(frame);
-    document.body.appendChild(overlay);
-
-    const tearDown = () => {
-      document.removeEventListener('keydown', onKeyDown);
-      overlay.classList.add('closing');
-      setTimeout(() => {
-        overlay.remove();
-        if (originFocus && typeof originFocus.focus === 'function') {
-          originFocus.focus({ preventScroll: true });
-        }
-      }, 220);
-    };
-
-    const onKeyDown = (evt) => {
-      if (evt.key === 'Escape') {
-        tearDown();
-        return;
-      }
-      if (hasCarousel) {
-        if (evt.key === 'ArrowLeft') {
-          evt.preventDefault();
-          handlePrev();
-        } else if (evt.key === 'ArrowRight') {
-          evt.preventDefault();
-          handleNext();
-        }
-      }
-    };
-
-    closeBtn.addEventListener('click', tearDown);
-    overlay.addEventListener('click', (evt) => {
-      if (evt.target === overlay) {
-        tearDown();
-      }
-    });
-
-    requestAnimationFrame(() => overlay.classList.add('open'));
-    document.addEventListener('keydown', onKeyDown);
-    closeBtn.focus({ preventScroll: true });
-  };
-
-  const wireLightboxTriggers = (images) => {
-    if (!images || !images.length) return;
-
-    images.forEach(imgEl => {
-      if (imgEl.dataset.lightboxBound === '1') return;
-      imgEl.dataset.lightboxBound = '1';
-
-      if (!imgEl.hasAttribute('tabindex')) {
-        imgEl.setAttribute('tabindex', '0');
-      }
-
-      const launchLightbox = () => {
-        const startIndex = images.indexOf(imgEl);
-        openLightbox(images, startIndex >= 0 ? startIndex : 0);
-      };
-
-      imgEl.addEventListener('click', () => {
-        launchLightbox();
-      });
-
-      imgEl.addEventListener('keydown', (evt) => {
-        if (evt.key === 'Enter' || evt.key === ' ') {
-          evt.preventDefault();
-          launchLightbox();
-        }
-      });
-    });
-  };
-
-  galleryLightboxGroups.forEach(group => wireLightboxTriggers(group));
-
-  const standaloneImages = Array.from(document.querySelectorAll('.gallery-image')).filter(img => !img.closest('.project-gallery'));
-  wireLightboxTriggers(standaloneImages);
-
-  // Update "Latest" timestamp on home hero from document last modified
-  const lastUpdatedEl = document.getElementById('last-updated');
-  if (lastUpdatedEl) {
-    try {
-      const modified = new Date(document.lastModified);
-      const options = { year: 'numeric', month: 'short', day: 'numeric' };
-      const formatted = modified.toLocaleDateString(undefined, options);
-      lastUpdatedEl.textContent = `✨ Last updated on ${formatted}`;
-    } catch (err) {
-      console.warn('Unable to parse last modified date', err);
-    }
-  }
-
-  // Index page: background thumbnails disabled for a cleaner hero
-  if (currentPage === '' || currentPage === 'index.html') {
-    const stage = document.getElementById('home-bg');
-    if (stage) {
-      stage.textContent = '';
-    }
-  }
-});
+  dialog.addEventListener('keydown', event => {
+    if (event.key === 'ArrowLeft') { event.preventDefault(); show(current - 1); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); show(current + 1); }
+  });
+})();
